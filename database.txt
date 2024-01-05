@@ -1,0 +1,287 @@
+CREATE  
+
+(europe:Continent{name:"Europe", surface:10180000}), 
+
+    (spain:Country{name:"Spain", habitants: 46500000, language:"spanish", capital: "Madrid", currency:"euro"}), 
+
+        (madrid:City{name:"Madrid", habitants: 3207247, services: ["Museum", "Park", "Cinema", "Cathedral"], surface:604.3}), 
+
+        (barcelona:City{name:"Barcelona", habitants: 1620343, services: ["Museum", "Park", "Cinema", "Cathedral", "Beach"], surface:101.9}), 
+
+        (oviedo:City{name:"Oviedo", habitants: 220567, services: ["Museum", "Cinema", "Park", "Cathedral"], surface:185.65}), 
+
+        (gijon:City{name:"Gijón", habitants: 271780, services: ["Museum", "Cinema", "Beach"], surface:181.6}), 
+
+    (italy:Country{name:"Italy", habitants: 60360000, language:"italian", capital: "Rome", currency:"euro"}), 
+
+        (milan:City{name:"Milan", habitants: 1352572, services: ["Shopping mall", "Entertainment"], surface: 135.19}), 
+
+        (venice:City{name:"Venice", habitants: 276055, services: ["Shopping mall", "Entertainment", "Cathedral"], surface: 418.3}), 
+
+        (rome:City{name:"Rome", habitants: 2874388, services: ["Shopping mall", "Entertainment", "Museum"], surface: 1285.31}), 
+
+    (belgium:Country{name:"Belgium", habitants: 11590000, language:"french", capital: "Brussels", currency:"euro"}), 
+
+        (brussels:City{name:"Brussels", habitants: 1198726, services: ["Museum", "Park", "Cathedral"], surface:161.38}), 
+
+    (france:Country{name:"France", habitants: 67750000, language:"french", capital: "Paris", currency:"euro"}), 
+
+        (paris:City{name:"Paris", habitants: 2161000, services: ["Museum", "Park", "Shopping Mall", "Cathedral"], surface:105}), 
+
+        (nantes:City{name:"Nantes", habitants: 303382, services: ["Park", "Shopping Mall"], surface:65.19}), 
+
+ 
+
+(america:Continent{name:"America", surface:42500000}), 
+
+    (usa:Country{name:"USA", habitants: 331002651, language:"english", capital: "Washington, D.C.", currency:"dollar"}), 
+
+        (milwaukee:City{name:"Milwaukee", habitants: 595825, services: ["Entertainment", "Park"], surface: 332.78}), 
+
+        (new_york:City{name:"New York", habitants: 8336817, services: ["Shopping mall", "Museum", "Park"], surface: 8444.35}), 
+
+        (washington:City{name:"Washington, D.C.", habitants: 702455, services: ["Museum", "Park"], surface: 177.01}), 
+
+    (mexico:Country{name:"Mexico", habitants: 127000000, language:"spanish", capital: "Mexico City", currency:"peso"}), 
+
+        (mexico_city:City{name:"Mexico City", habitants: 8851080, services: ["Museum", "Park", "Cinema", "Cathedral"], surface:1485}), 
+
+ 
+
+(asia:Continent{name:"Asia", surface: 44580000}), 
+
+    (japan:Country{name:"Japan", habitants: 125700000, language:"japanese", capital: "Tokyo", currency:"yen"}), 
+
+        (kyoto:City{name:"Kyoto", habitants: 1475000, services: ["Park", "Shopping Mall", "Santurary", "Palace"], surface:827.8}), 
+
+        (tokyo:City{name:"Tokyo", habitants: 13960000, services: ["Park", "Shopping Mall", "Hospital","Temple", "Santuary"], surface:2194}), 
+
+ 
+
+// RELATIONSHIPS 
+
+(spain)-[:LOCATED_IN]->(europe), 
+
+(mexico)-[:LOCATED_IN]->(america), 
+
+(madrid)-[:LOCATED_IN]->(spain), 
+
+(barcelona)-[:LOCATED_IN]->(spain), 
+
+(oviedo)-[:LOCATED_IN]->(spain), 
+
+(gijon)-[:LOCATED_IN]->(spain), 
+
+(mexico_city)-[:LOCATED_IN]->(mexico), 
+
+ 
+
+(barcelona)-[:TRAIN{cost: 20, time_hour:3}]->(madrid), 
+
+(barcelona)<-[:TRAIN{cost: 20, time_hour:3}]-(madrid), 
+
+(madrid)-[:TRAIN{cost: 60, time_hour:3}]->(oviedo), 
+
+(madrid)<-[:TRAIN{cost: 60, time_hour:3}]-(oviedo), 
+
+(oviedo)-[:TRAIN{cost: 7.5, time_hour:1}]->(gijon), 
+
+(oviedo)<-[:TRAIN{cost: 7.5, time_hour:1}]-(gijon), 
+
+ 
+
+(barcelona)-[:PLANE{cost: 80, time_hour:1}]->(madrid), 
+
+(barcelona)<-[:PLANE{cost: 80, time_hour:1}]-(madrid), 
+
+(madrid)-[:PLANE{cost: 250, time_hour:12}]->(mexico_city), 
+
+(madrid)<-[:PLANE{cost: 250, time_hour:12}]-(mexico_city), 
+
+ 
+
+(barcelona)-[:BUS{cost: 80, time_hour:1}]->(madrid), 
+
+(barcelona)<-[:BUS{cost: 80, time_hour:1}]-(madrid), 
+
+(barcelona)-[:BUS{cost: 10, time_hour:8}]->(oviedo), 
+
+(barcelona)<-[:BUS{cost: 10, time_hour:8}]-(oviedo), 
+
+(madrid)-[:BUS{cost: 15, time_hour:10}]->(oviedo), 
+
+(madrid)<-[:BUS{cost: 15, time_hour:10}]-(oviedo), 
+
+(oviedo)-[:BUS{cost: 5, time_hour:0.5}]->(gijon), 
+
+(oviedo)<-[:BUS{cost: 5, time_hour:0.5}]-(gijon), 
+
+ 
+
+(italy)-[:LOCATED_IN]->(europe), 
+
+(usa)-[:LOCATED_IN]->(america), 
+
+ 
+
+(milan)-[:LOCATED_IN]->(italy), 
+
+(venice)-[:LOCATED_IN]->(italy), 
+
+(rome)-[:LOCATED_IN]->(italy), 
+
+(milwaukee)-[:LOCATED_IN]->(usa), 
+
+(new_york)-[:LOCATED_IN]->(usa), 
+
+(washington)-[:LOCATED_IN]->(usa), 
+
+ 
+
+(madrid)<-[:PLANE{cost: 88, time_hour:2.5}]-(rome), 
+
+(madrid)-[:PLANE{cost: 88, time_hour:2.5}]->(rome), 
+
+ 
+
+(milan)-[:PLANE{cost: 105, time_hour:1}]->(rome), 
+
+(milan)<-[:PLANE{cost: 105, time_hour:1}]-(rome), 
+
+(milan)-[:BUS{cost: 65, time_hour:8.1}]->(rome), 
+
+(milan)<-[:BUS{cost: 65, time_hour:8.1}]-(rome), 
+
+(milan)-[:TRAIN{cost: 55, time_hour:1.5}]->(rome), 
+
+(milan)<-[:TRAIN{cost: 55, time_hour:1.5}]-(rome), 
+
+(venice)-[:PLANE{cost: 85, time_hour:1}]->(milan), 
+
+(venice)<-[:PLANE{cost: 85, time_hour:1}]-(milan), 
+
+(venice)-[:BUS{cost: 65, time_hour:7}]->(milan), 
+
+(venice)<-[:BUS{cost: 65, time_hour:7}]-(milan), 
+
+(venice)-[:PLANE{cost: 105, time_hour:1}]->(rome), 
+
+(venice)<-[:PLANE{cost: 105, time_hour:1}]-(rome), 
+
+ 
+
+(new_york)-[:PLANE{cost: 102, time_hour:9.1}]->(tokyo), 
+
+(new_york)<-[:PLANE{cost: 102, time_hour:9.1}]-(tokyo), 
+
+(washington)-[:BUS{cost: 32, time_hour:2}]->(mexico_city), 
+
+(washington)<-[:BUS{cost: 32, time_hour:2}]-(mexico_city), 
+
+(new_york)-[:PLANE{cost: 125, time_hour:13.1}]->(madrid), 
+
+(new_york)<-[:PLANE{cost: 125, time_hour:13.1}]-(madrid), 
+
+(new_york)-[:PLANE{cost: 12, time_hour:1.1}]->(washington), 
+
+(new_york)<-[:PLANE{cost: 12, time_hour:1.1}]-(washington), 
+
+(new_york)-[:TRAIN{cost: 56, time_hour:5.1}]->(washington), 
+
+(new_york)<-[:TRAIN{cost: 56, time_hour:5.1}]-(washington), 
+
+(washington)-[:PLANE{cost: 25, time_hour:3}]->(milwaukee), 
+
+(washington)<-[:PLANE{cost: 25, time_hour:3}]-(milwaukee), 
+
+(washington)-[:BUS{cost: 65, time_hour:8.1}]->(milwaukee), 
+
+(washington)<-[:BUS{cost: 65, time_hour:8.1}]-(milwaukee), 
+
+(washington)-[:TRAIN{cost: 75, time_hour:6}]->(milwaukee), 
+
+(washington)<-[:TRAIN{cost: 75, time_hour:6}]-(milwaukee), 
+
+(milwaukee)-[:BUS{cost: 85, time_hour:6.5}]->(new_york), 
+
+(milwaukee)<-[:BUS{cost: 85, time_hour:6.5}]-(new_york), 
+
+ 
+
+(belgium)-[:LOCATED_IN]->(europe), 
+
+(france)-[:LOCATED_IN]->(europe), 
+
+(japan)-[:LOCATED_IN]->(asia), 
+
+ 
+
+(brussels)-[:LOCATED_IN]->(belgium), 
+
+(paris)-[:LOCATED_IN]->(france), 
+
+(nantes)-[:LOCATED_IN]->(france), 
+
+(kyoto)-[:LOCATED_IN]->(japan), 
+
+(tokyo)-[:LOCATED_IN]->(japan), 
+
+ 
+
+(kyoto)-[:PLANE{cost: 300, time_hour:10}]->(paris), 
+
+(kyoto)<-[:PLANE{cost: 300, time_hour:10}]-(paris), 
+
+(tokyo)-[:PLANE{cost: 405, time_hour:8}]->(paris), 
+
+(tokyo)<-[:PLANE{cost: 405, time_hour:8}]-(paris), 
+
+(tokyo)-[:PLANE{cost: 120, time_hour:2.5}]->(kyoto), 
+
+(tokyo)<-[:PLANE{cost: 120, time_hour:2.5}]-(kyoto), 
+
+(kyoto)-[:PLANE{cost: 450, time_hour:9.5}]->(brussels), 
+
+(kyoto)<-[:PLANE{cost: 450, time_hour:9.5}]-(brussels), 
+
+(tokyo)-[:PLANE{cost: 501, time_hour:8.2}]->(brussels), 
+
+(tokyo)<-[:PLANE{cost: 501, time_hour:8.2}]-(brussels), 
+
+ 
+
+(brussels)-[:PLANE{cost: 60, time_hour:1.5}]->(paris), 
+
+(brussels)<-[:PLANE{cost: 60, time_hour:1.5}]-(paris), 
+
+(brussels)-[:PLANE{cost: 120, time_hour:2.3}]->(nantes), 
+
+(brussels)<-[:PLANE{cost: 120, time_hour:2.3}]-(nantes), 
+
+ 
+
+(brussels)-[:TRAIN{cost: 29, time_hour:3}]->(paris), 
+
+(brussels)<-[:TRAIN{cost: 29, time_hour:3}]-(paris), 
+
+(brussels)-[:TRAIN{cost: 50, time_hour:4}]->(nantes), 
+
+(brussels)<-[:TRAIN{cost: 50, time_hour:4}]-(nantes), 
+
+(tokyo)-[:TRAIN{cost: 160, time_hour:7}]->(kyoto), 
+
+(tokyo)<-[:TRAIN{cost: 160, time_hour:7}]-(kyoto), 
+
+ 
+
+(brussels)-[:BUS{cost: 80, time_hour:5}]->(paris), 
+
+(brussels)<-[:BUS{cost: 80, time_hour:5}]-(paris), 
+
+(brussels)-[:BUS{cost: 89, time_hour:6.5}]->(nantes), 
+
+(brussels)<-[:BUS{cost: 89, time_hour:6.5}]-(nantes), 
+
+(tokyo)-[:BUS{cost: 187, time_hour:5.5}]->(kyoto), 
+
+(tokyo)<-[:BUS{cost: 187, time_hour:5.5}]-(kyoto) 

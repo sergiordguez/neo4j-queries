@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="estilo.css" />
+    <link rel="icon" href="multimedia/neo4j-icon-452x512-b63ajo4a.png" />
+    <title>Neo4j Query App</title>
+</head>
+<body>
+    <h1>Neo4j Query App</h1>
+
+    <nav>
+        <button onclick="runQuery(1)" title="Obtains the available transports from a node of type City with name “Madrid” to any other node of type City.">Simple Query 1</button>
+        <button onclick="runQuery(2)" title="This query will provide the countries of Europe sorted by their population from highest to lowest.">Simple Query 2</button>
+        <button onclick="runQuery(3)" title="This query displays all cities with a population exceeding 1,000,000 residents that belong to a country lacking cities with a “beach”. The cities are shown grouped by country.">Intermediate Query 1</button>
+        <button onclick="runQuery(4)" title="This query displays cities grouped by country that have destinations to cities with less than 150m2 of surface area.">Intermediate Query 2</button>
+        <button onclick="runQuery(5)" title="This query uses the travel time relationship to find all cities reachable from Barcelona in a single journey, with at most 2 travels, of less than 5 hours, regardless of the transport mode. It returns the name of the city and the services available in each city.">Advanced Query 1</button>
+        <button onclick="runQuery(6)" title="It searches for all the shortest paths between Oviedo and Kyoto and shows the cities on each path and the transport means used to get from one to the other.">Advanced Query 2</button>
+    </nav>
+
+    <div id="result"></div>
+
+    <script src="https://unpkg.com/neo4j-driver"></script>
+    <script>
+        const neo4jUri = "bolt://localhost:7687"; // Replace with your Neo4j URI
+        const neo4jUser = ""; // Replace with your Neo4j user 
+        const neo4jPassword = ""; // Replace with your Neo4j password
+
+        const driver = neo4j.driver(neo4jUri, neo4j.auth.basic(neo4jUser, neo4jPassword));
+        const session = driver.session();
+
+        function runQuery(queryNumber) {
+            let cypherQuery = "";
+
+            switch (queryNumber) {
+                case 1:
+                    cypherQuery = "MATCH (city:City{name:'Madrid'})-[transport]->(destination:City) RETURN city.name AS From, TYPE(transport) AS transport, destination.name AS To, transport.cost AS Cost, transport.time_hour AS Time ";
+                    break;
+                case 2:
+                    cypherQuery = "MATCH (country:Country)-[:LOCATED_IN]->(continent:Continent{name:'Europe'}) RETURN country.name AS Country, country.habitants AS Population ORDER BY Population DESC ";
+                    break;
+                case 3: 
+                    cypherQuery = "MATCH (city:City)-[:LOCATED_IN]->(country) WHERE city.habitants > 1000000 AND NOT EXISTS { MATCH (c)-[: LOCATED_IN]->(country) WHERE 'Beach' IN c.services } RETURN country.name AS country, collect(city.name) AS Cities";
+                    break;
+                case 4:
+                    cypherQuery = "MATCH (country:Country)<-[:LOCATED_IN]-(origin:City)-[r]->(dest:City) WITH country.name AS country, origin.name AS name, collect(dest.surface) AS surfaces WHERE ANY(surface IN surfaces WHERE surface < 150) RETURN country, collect(name) AS cities ";
+                    break;
+                case 5:
+                    cypherQuery = "MATCH (start:City{name:'Barcelona'})-[r:TRAIN|PLANE|BUS*1..2]->(destination:City) WHERE REDUCE(s = 0, rel IN r | s + rel.time_hour) < 5 RETURN DISTINCT destination.name AS Destination_name, destination.services AS destination_services ";
+                    break;
+                case 6: 
+                    cypherQuery = "MATCH paths = allShortestPaths((origin:City{name: 'Oviedo'})-[r:PLANE|TRAIN|BUS*]->(dest:City{name: 'Kyoto'})) UNWIND relationships(paths) AS path WITH collect(TYPE(path)) AS transport, paths RETURN [n in nodes (paths) | n.name ] AS cities, transport ";
+                    break;
+            }
+
+            session.run(cypherQuery)
+                .then(result => {
+                    const records = result.records;
+                    const resultDiv = document.getElementById("result");
+
+                    resultDiv.innerHTML = "<h2>Results:</h2>";
+                    records.forEach(record => {
+                        resultDiv.innerHTML += JSON.stringify(record._fields) + "<br>";
+                    });
+                })
+                .catch(error => {
+                    console.error("Error running query", error);
+                });
+        }
+
+        window.addEventListener('beforeunload', () => {
+            session.close();
+            driver.close();
+        });
+    </script>
+</body>
+</html>
